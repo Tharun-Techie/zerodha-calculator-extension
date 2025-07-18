@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Zerodha Brokerage Calculator",
+  "version": "1.0",
+  "description": "Clean brokerage calculator extracted from Zerodha",
+  "permissions": ["activeTab"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Zerodha Calculator"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

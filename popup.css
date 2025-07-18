@@ -1,0 +1,293 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f8f9fa;
+    width: 420px;
+    height: 600px;
+    overflow: hidden;
+}
+
+.calculator-container {
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.header h1 {
+    color: #387ed1;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.tabs-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* Main tabs */
+.main-tabs {
+    display: flex;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.main-tabs .tab {
+    flex: 1;
+    padding: 10px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.main-tabs .tab.active {
+    color: #387ed1;
+    border-bottom: 2px solid #387ed1;
+}
+
+/* Sub-tabs */
+.sub-tabs {
+    display: flex;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 3px;
+    flex-shrink: 0;
+}
+
+.sub-tab {
+    flex: 1;
+    padding: 8px 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+    margin: 0 1px;
+    white-space: nowrap;
+}
+
+.sub-tab.active {
+    background: white;
+    color: #387ed1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Tab content */
+.tab-content {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+
+.sub-tab-content {
+    display: none;
+    flex: 1;
+    overflow: hidden;
+}
+
+.sub-tab-content.active {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Calculator card */
+.calc-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.calc-card h3 {
+    color: #495057;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Input styling */
+.input-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.input-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.input-field label {
+    font-size: 10px;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.input-field input,
+.input-field select {
+    padding: 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 12px;
+    transition: border-color 0.3s ease;
+    width: 100%;
+    min-width: 0;
+}
+
+.input-field input:focus,
+.input-field select:focus {
+    outline: none;
+    border-color: #387ed1;
+}
+
+/* Exchange selection */
+.exchange-select {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.exchange-select label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #495057;
+    cursor: pointer;
+}
+
+.exchange-select input[type="radio"] {
+    accent-color: #387ed1;
+}
+
+/* Results section */
+.results {
+    border-top: 1px solid #e9ecef;
+    padding-top: 6px;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    border-bottom: 1px solid #f8f9fa;
+    min-height: 26px;
+}
+
+.result-row span:first-child {
+    font-size: 11px;
+    color: #6c757d;
+    flex: 1;
+    text-align: left;
+}
+
+.result-row span:last-child {
+    font-size: 11px;
+    font-weight: 500;
+    color: #495057;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.result-row.total {
+    border-top: 1px solid #e9ecef;
+    margin-top: 4px;
+    padding-top: 6px;
+    font-weight: 600;
+}
+
+.result-row.total span {
+    color: #212529;
+    font-size: 12px;
+}
+
+.result-row.profit {
+    background: #f8f9fa;
+    margin: 4px -4px 0;
+    padding: 6px;
+    border-radius: 3px;
+    border: none;
+}
+
+.result-row.profit span {
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.result-row.profit span:last-child {
+    color: #28a745;
+}
+
+.result-row.profit span:last-child.negative {
+    color: #dc3545;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
