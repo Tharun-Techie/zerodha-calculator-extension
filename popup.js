@@ -1,5 +1,6 @@
 class ZerodhaCalculator {
     constructor() {
+        this.storageKey = 'zerodha_calculator_data';
         this.init();
     }
 
@@ -8,7 +9,188 @@ class ZerodhaCalculator {
         this.setupSubTabs();
         this.setupCalculationFunctions();
         this.setupEventListeners();
+        this.loadStoredData();
         this.calculateAll();
+    }
+
+    // Save data to localStorage
+    saveData() {
+        const data = {
+            // Equity data
+            intraday: {
+                bp: document.getElementById('intra_bp')?.value || '',
+                sp: document.getElementById('intra_sp')?.value || '',
+                qty: document.getElementById('intra_qty')?.value || '',
+                exchange: document.querySelector('input[name="intra_exchange"]:checked')?.value || 'NSE'
+            },
+            delivery: {
+                bp: document.getElementById('del_bp')?.value || '',
+                sp: document.getElementById('del_sp')?.value || '',
+                qty: document.getElementById('del_qty')?.value || '',
+                exchange: document.querySelector('input[name="del_exchange"]:checked')?.value || 'NSE'
+            },
+            futures: {
+                bp: document.getElementById('fut_bp')?.value || '',
+                sp: document.getElementById('fut_sp')?.value || '',
+                qty: document.getElementById('fut_qty')?.value || '',
+                exchange: document.querySelector('input[name="fut_exchange"]:checked')?.value || 'NSE'
+            },
+            options: {
+                bp: document.getElementById('opt_bp')?.value || '',
+                sp: document.getElementById('opt_sp')?.value || '',
+                qty: document.getElementById('opt_qty')?.value || '',
+                exchange: document.querySelector('input[name="opt_exchange"]:checked')?.value || 'NSE'
+            },
+            // Currency data
+            currencyFutures: {
+                bp: document.getElementById('curr_fut_bp')?.value || '',
+                sp: document.getElementById('curr_fut_sp')?.value || '',
+                qty: document.getElementById('curr_fut_qty')?.value || ''
+            },
+            currencyOptions: {
+                strike: document.getElementById('curr_opt_strike')?.value || '',
+                bp: document.getElementById('curr_opt_bp')?.value || '',
+                sp: document.getElementById('curr_opt_sp')?.value || '',
+                qty: document.getElementById('curr_opt_qty')?.value || ''
+            },
+            // Commodity data
+            commodityFutures: {
+                commodity: document.getElementById('comm_fut_select')?.value || 'GOLD',
+                bp: document.getElementById('comm_fut_bp')?.value || '',
+                sp: document.getElementById('comm_fut_sp')?.value || '',
+                qty: document.getElementById('comm_fut_qty')?.value || ''
+            },
+            commodityOptions: {
+                commodity: document.getElementById('comm_opt_select')?.value || 'GOLD',
+                strike: document.getElementById('comm_opt_strike')?.value || '',
+                bp: document.getElementById('comm_opt_bp')?.value || '',
+                sp: document.getElementById('comm_opt_sp')?.value || '',
+                qty: document.getElementById('comm_opt_qty')?.value || ''
+            },
+            // UI state
+            activeTab: document.querySelector('.main-tabs .tab.active')?.dataset.tab || 'equities',
+            activeSubTab: document.querySelector('.sub-tab.active')?.dataset.subtab || 'intraday',
+            lastUpdated: new Date().toISOString()
+        };
+
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+    }
+
+    // Load data from localStorage
+    loadStoredData() {
+        try {
+            const storedData = localStorage.getItem(this.storageKey);
+            if (!storedData) return;
+
+            const data = JSON.parse(storedData);
+
+            // Restore equity data
+            if (data.intraday) {
+                this.setFieldValue('intra_bp', data.intraday.bp);
+                this.setFieldValue('intra_sp', data.intraday.sp);
+                this.setFieldValue('intra_qty', data.intraday.qty);
+                this.setRadioValue('intra_exchange', data.intraday.exchange);
+            }
+
+            if (data.delivery) {
+                this.setFieldValue('del_bp', data.delivery.bp);
+                this.setFieldValue('del_sp', data.delivery.sp);
+                this.setFieldValue('del_qty', data.delivery.qty);
+                this.setRadioValue('del_exchange', data.delivery.exchange);
+            }
+
+            if (data.futures) {
+                this.setFieldValue('fut_bp', data.futures.bp);
+                this.setFieldValue('fut_sp', data.futures.sp);
+                this.setFieldValue('fut_qty', data.futures.qty);
+                this.setRadioValue('fut_exchange', data.futures.exchange);
+            }
+
+            if (data.options) {
+                this.setFieldValue('opt_bp', data.options.bp);
+                this.setFieldValue('opt_sp', data.options.sp);
+                this.setFieldValue('opt_qty', data.options.qty);
+                this.setRadioValue('opt_exchange', data.options.exchange);
+            }
+
+            // Restore currency data
+            if (data.currencyFutures) {
+                this.setFieldValue('curr_fut_bp', data.currencyFutures.bp);
+                this.setFieldValue('curr_fut_sp', data.currencyFutures.sp);
+                this.setFieldValue('curr_fut_qty', data.currencyFutures.qty);
+            }
+
+            if (data.currencyOptions) {
+                this.setFieldValue('curr_opt_strike', data.currencyOptions.strike);
+                this.setFieldValue('curr_opt_bp', data.currencyOptions.bp);
+                this.setFieldValue('curr_opt_sp', data.currencyOptions.sp);
+                this.setFieldValue('curr_opt_qty', data.currencyOptions.qty);
+            }
+
+            // Restore commodity data
+            if (data.commodityFutures) {
+                this.setFieldValue('comm_fut_select', data.commodityFutures.commodity);
+                this.setFieldValue('comm_fut_bp', data.commodityFutures.bp);
+                this.setFieldValue('comm_fut_sp', data.commodityFutures.sp);
+                this.setFieldValue('comm_fut_qty', data.commodityFutures.qty);
+            }
+
+            if (data.commodityOptions) {
+                this.setFieldValue('comm_opt_select', data.commodityOptions.commodity);
+                this.setFieldValue('comm_opt_strike', data.commodityOptions.strike);
+                this.setFieldValue('comm_opt_bp', data.commodityOptions.bp);
+                this.setFieldValue('comm_opt_sp', data.commodityOptions.sp);
+                this.setFieldValue('comm_opt_qty', data.commodityOptions.qty);
+            }
+
+            // Restore UI state
+            if (data.activeTab) {
+                this.setActiveTab(data.activeTab);
+            }
+            if (data.activeSubTab) {
+                this.setActiveSubTab(data.activeSubTab);
+            }
+
+        } catch (error) {
+            console.error('Error loading stored data:', error);
+        }
+    }
+
+    // Helper functions
+    setFieldValue(id, value) {
+        const element = document.getElementById(id);
+        if (element && value !== '') {
+            element.value = value;
+        }
+    }
+
+    setRadioValue(name, value) {
+        const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+        if (radio) {
+            radio.checked = true;
+        }
+    }
+
+    setActiveTab(tabName) {
+        const tab = document.querySelector(`[data-tab="${tabName}"]`);
+        if (tab) {
+            tab.click();
+        }
+    }
+
+    setActiveSubTab(subTabName) {
+        setTimeout(() => {
+            const subTab = document.querySelector(`[data-subtab="${subTabName}"]`);
+            if (subTab) {
+                subTab.click();
+            }
+        }, 100);
+    }
+
+    // Clear all stored data - NO CONFIRMATION
+    clearStoredData() {
+        localStorage.removeItem(this.storageKey);
+        location.reload();
     }
 
     setupMainTabs() {
@@ -21,6 +203,9 @@ class ZerodhaCalculator {
                 tabContents.forEach(tc => tc.classList.remove('active'));
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.tab).classList.add('active');
+                
+                // Save UI state
+                this.saveData();
             });
         });
     }
@@ -43,11 +228,25 @@ class ZerodhaCalculator {
                 if (targetContent) {
                     targetContent.classList.add('active');
                 }
+                
+                // Save UI state
+                this.saveData();
             });
         });
     }
 
     setupEventListeners() {
+        // Add auto-save functionality to all input fields
+        const allInputs = document.querySelectorAll('input, select');
+        allInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                this.saveData();
+            });
+            input.addEventListener('change', () => {
+                this.saveData();
+            });
+        });
+
         // Intraday inputs
         const intraInputs = ['intra_bp', 'intra_sp', 'intra_qty'];
         intraInputs.forEach(id => {
@@ -458,5 +657,26 @@ class ZerodhaCalculator {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    new ZerodhaCalculator();
+    const calculator = new ZerodhaCalculator();
+    
+    // Add reset button to clear stored data (no confirmation)
+    const resetButton = document.createElement('button');
+    resetButton.textContent = 'Reset';
+    resetButton.style.cssText = `
+        position: fixed;
+        bottom: 8px;
+        right: 8px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    `;
+    resetButton.onclick = () => {
+        calculator.clearStoredData();
+    };
+    document.body.appendChild(resetButton);
 });
