@@ -1,287 +1,571 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zerodha Calculator</title>
+    <title>Brokerage Calculator</title>
     <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
     <div class="calculator-container">
         <div class="header">
             <h1>Brokerage Calculator</h1>
+            <div class="theme-toggle">
+                <button id="themeToggle" class="theme-btn">🌙</button>
+            </div>
         </div>
-        
+
         <div class="tabs-container">
-            <!-- Main Tabs -->
-            <div class="tabs main-tabs">
+            <div class="main-tabs">
                 <button class="tab active" data-tab="equities">Equities - F&O</button>
                 <button class="tab" data-tab="currency">Currency</button>
                 <button class="tab" data-tab="commodities">Commodities</button>
             </div>
-            
+
             <!-- Equities Tab -->
-            <div class="tab-content active" id="equities">
-                <div class="tabs sub-tabs">
+            <div id="equities" class="tab-content active">
+                <div class="sub-tabs">
                     <button class="sub-tab active" data-subtab="intraday">Intraday</button>
                     <button class="sub-tab" data-subtab="delivery">Delivery</button>
                     <button class="sub-tab" data-subtab="futures">Futures</button>
                     <button class="sub-tab" data-subtab="options">Options</button>
                 </div>
-                
-                <!-- Intraday Sub-tab -->
-                <div class="sub-tab-content active" id="intraday">
+
+                <!-- Intraday -->
+                <div id="intraday" class="sub-tab-content active">
                     <div class="calc-card">
                         <h3>Intraday Equity</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="intra_bp" value="1000" min="0">
+                                <input type="number" id="intra_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="intra_sp" value="1100" min="0">
+                                <input type="number" id="intra_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <!-- Quantity/Amount Toggle -->
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="intra_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="intra_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="intra_qty" value="400" min="0">
+                                <label id="intra_qty_label">QUANTITY</label>
+                                <input type="number" id="intra_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <label>EXCHANGE</label>
-                                <div class="exchange-select">
-                                    <label><input type="radio" name="intra_exchange" value="NSE" checked>NSE</label>
-                                    <label><input type="radio" name="intra_exchange" value="BSE">BSE</label>
-                                </div>
+                            <div class="input-field" id="intra_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="intra_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="exchange-select">
+                            <label><input type="radio" name="intra_exchange" value="NSE" checked> NSE</label>
+                            <label><input type="radio" name="intra_exchange" value="BSE"> BSE</label>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="intra_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="intra_brokerage">₹0</span></div>
-                            <div class="result-row"><span>STT</span><span id="intra_stt">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="intra_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="intra_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="intra_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="intra_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="intra_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="intra_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="intra_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="intra_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="intra_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="intra_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>STT</span>
+                                <span id="intra_stt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="intra_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="intra_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="intra_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="intra_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="intra_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="intra_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Delivery Sub-tab -->
-                <div class="sub-tab-content" id="delivery">
+                <!-- Delivery -->
+                <div id="delivery" class="sub-tab-content">
                     <div class="calc-card">
                         <h3>Delivery Equity</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="del_bp" value="1000" min="0">
+                                <input type="number" id="del_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="del_sp" value="1100" min="0">
+                                <input type="number" id="del_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="del_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="del_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="del_qty" value="400" min="0">
+                                <label id="del_qty_label">QUANTITY</label>
+                                <input type="number" id="del_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <label>EXCHANGE</label>
-                                <div class="exchange-select">
-                                    <label><input type="radio" name="del_exchange" value="NSE" checked>NSE</label>
-                                    <label><input type="radio" name="del_exchange" value="BSE">BSE</label>
-                                </div>
+                            <div class="input-field" id="del_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="del_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="exchange-select">
+                            <label><input type="radio" name="del_exchange" value="NSE" checked> NSE</label>
+                            <label><input type="radio" name="del_exchange" value="BSE"> BSE</label>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="del_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="del_brokerage">₹0</span></div>
-                            <div class="result-row"><span>STT</span><span id="del_stt">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="del_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="del_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="del_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="del_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="del_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="del_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="del_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="del_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="del_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="del_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>STT</span>
+                                <span id="del_stt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="del_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="del_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="del_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="del_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="del_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="del_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Futures Sub-tab -->
-                <div class="sub-tab-content" id="futures">
+                <!-- Futures -->
+                <div id="futures" class="sub-tab-content">
                     <div class="calc-card">
                         <h3>F&O - Futures</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="fut_bp" value="1000" min="0">
+                                <input type="number" id="fut_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="fut_sp" value="1100" min="0">
+                                <input type="number" id="fut_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="fut_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="fut_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="fut_qty" value="400" min="0">
+                                <label id="fut_qty_label">QUANTITY</label>
+                                <input type="number" id="fut_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <label>EXCHANGE</label>
-                                <div class="exchange-select">
-                                    <label><input type="radio" name="fut_exchange" value="NSE" checked>NSE</label>
-                                    <label><input type="radio" name="fut_exchange" value="BSE">BSE</label>
-                                </div>
+                            <div class="input-field" id="fut_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="fut_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="exchange-select">
+                            <label><input type="radio" name="fut_exchange" value="NSE" checked> NSE</label>
+                            <label><input type="radio" name="fut_exchange" value="BSE"> BSE</label>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="fut_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="fut_brokerage">₹0</span></div>
-                            <div class="result-row"><span>STT</span><span id="fut_stt">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="fut_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="fut_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="fut_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="fut_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="fut_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="fut_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="fut_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="fut_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="fut_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="fut_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>STT</span>
+                                <span id="fut_stt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="fut_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="fut_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="fut_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="fut_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="fut_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="fut_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Options Sub-tab -->
-                <div class="sub-tab-content" id="options">
+                <!-- Options -->
+                <div id="options" class="sub-tab-content">
                     <div class="calc-card">
                         <h3>F&O - Options</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="opt_bp" value="100" min="0">
+                                <input type="number" id="opt_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="opt_sp" value="110" min="0">
+                                <input type="number" id="opt_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="opt_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="opt_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="opt_qty" value="400" min="0">
+                                <label id="opt_qty_label">QUANTITY</label>
+                                <input type="number" id="opt_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <label>EXCHANGE</label>
-                                <div class="exchange-select">
-                                    <label><input type="radio" name="opt_exchange" value="NSE" checked>NSE</label>
-                                    <label><input type="radio" name="opt_exchange" value="BSE">BSE</label>
-                                </div>
+                            <div class="input-field" id="opt_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="opt_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="exchange-select">
+                            <label><input type="radio" name="opt_exchange" value="NSE" checked> NSE</label>
+                            <label><input type="radio" name="opt_exchange" value="BSE"> BSE</label>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="opt_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="opt_brokerage">₹0</span></div>
-                            <div class="result-row"><span>STT</span><span id="opt_stt">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="opt_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="opt_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="opt_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="opt_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="opt_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="opt_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="opt_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="opt_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="opt_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="opt_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>STT</span>
+                                <span id="opt_stt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="opt_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="opt_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="opt_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="opt_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="opt_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="opt_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Currency Tab -->
-            <div class="tab-content" id="currency">
-                <div class="tabs sub-tabs">
-                    <button class="sub-tab active" data-subtab="curr-futures">Futures</button>
-                    <button class="sub-tab" data-subtab="curr-options">Options</button>
+            <div id="currency" class="tab-content">
+                <div class="sub-tabs">
+                    <button class="sub-tab active" data-subtab="curr_futures">Futures</button>
+                    <button class="sub-tab" data-subtab="curr_options">Options</button>
                 </div>
-                
-                <!-- Currency Futures Sub-tab -->
-                <div class="sub-tab-content active" id="curr-futures">
+
+                <!-- Currency Futures -->
+                <div id="curr_futures" class="sub-tab-content active">
                     <div class="calc-card">
                         <h3>Currency Futures</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="curr_fut_bp" value="49.2525" min="0" step="0.0001">
+                                <input type="number" id="curr_fut_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="curr_fut_sp" value="49.2725" min="0" step="0.0001">
+                                <input type="number" id="curr_fut_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="curr_fut_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="curr_fut_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="curr_fut_qty" value="1" min="0">
+                                <label id="curr_fut_qty_label">QUANTITY</label>
+                                <input type="number" id="curr_fut_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <!-- Empty space for alignment -->
+                            <div class="input-field" id="curr_fut_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="curr_fut_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="curr_fut_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="curr_fut_brokerage">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="curr_fut_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="curr_fut_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="curr_fut_sebi">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="curr_fut_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="curr_fut_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="curr_fut_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="curr_fut_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="curr_fut_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="curr_fut_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="curr_fut_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="curr_fut_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="curr_fut_sebi">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="curr_fut_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="curr_fut_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Currency Options Sub-tab -->
-                <div class="sub-tab-content" id="curr-options">
+                <!-- Currency Options -->
+                <div id="curr_options" class="sub-tab-content">
                     <div class="calc-card">
                         <h3>Currency Options</h3>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>STRIKE</label>
-                                <input type="number" id="curr_opt_strike" value="60.75" min="0" step="0.01">
+                                <input type="number" id="curr_opt_strike" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="curr_opt_bp" value="0.0625" min="0" step="0.0001">
+                                <input type="number" id="curr_opt_bp" step="0.01" placeholder="0">
                             </div>
                         </div>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="curr_opt_sp" value="0.0675" min="0" step="0.0001">
-                            </div>
-                            <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="curr_opt_qty" value="1" min="0">
+                                <input type="number" id="curr_opt_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="curr_opt_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="curr_opt_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label id="curr_opt_qty_label">QUANTITY</label>
+                                <input type="number" id="curr_opt_qty" step="1" placeholder="0">
+                            </div>
+                            <div class="input-field" id="curr_opt_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="curr_opt_amount" step="0.01" placeholder="0">
+                            </div>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="curr_opt_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="curr_opt_brokerage">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="curr_opt_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="curr_opt_gst">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="curr_opt_sebi">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="curr_opt_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="curr_opt_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="curr_opt_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="curr_opt_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="curr_opt_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="curr_opt_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="curr_opt_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="curr_opt_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="curr_opt_sebi">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="curr_opt_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="curr_opt_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Commodities Tab -->
-            <div class="tab-content" id="commodities">
-                <div class="tabs sub-tabs">
-                    <button class="sub-tab active" data-subtab="comm-futures">Futures</button>
-                    <button class="sub-tab" data-subtab="comm-options">Options</button>
+            <div id="commodities" class="tab-content">
+                <div class="sub-tabs">
+                    <button class="sub-tab active" data-subtab="comm_futures">Futures</button>
+                    <button class="sub-tab" data-subtab="comm_options">Options</button>
                 </div>
-                
-                <!-- Commodity Futures Sub-tab -->
-                <div class="sub-tab-content active" id="comm-futures">
+
+                <!-- Commodity Futures -->
+                <div id="comm_futures" class="sub-tab-content active">
                     <div class="calc-card">
                         <h3>Commodity Futures</h3>
                         <div class="input-group">
@@ -289,43 +573,95 @@
                                 <label>COMMODITY</label>
                                 <select id="comm_fut_select">
                                     <option value="GOLD" data-multiplier="100">GOLD</option>
-                                    <option value="SILVER" data-multiplier="30">SILVER</option>
-                                    <option value="COPPER" data-multiplier="2500">COPPER</option>
-                                    <option value="CRUDEOIL" data-multiplier="100">CRUDE OIL</option>
-                                    <option value="NATURALGAS" data-multiplier="1250">NATURAL GAS</option>
+                                    <option value="SILVER" data-multiplier="30000">SILVER</option>
+                                    <option value="COPPER" data-multiplier="1000">COPPER</option>
+                                    <option value="CRUDE OIL" data-multiplier="100">CRUDE OIL</option>
+                                    <option value="NATURAL GAS" data-multiplier="1250">NATURAL GAS</option>
                                 </select>
-                            </div>
-                            <div class="input-field">
-                                <label>BUY</label>
-                                <input type="number" id="comm_fut_bp" value="110" min="0">
                             </div>
                         </div>
                         <div class="input-group">
                             <div class="input-field">
-                                <label>SELL</label>
-                                <input type="number" id="comm_fut_sp" value="112" min="0">
+                                <label>BUY</label>
+                                <input type="number" id="comm_fut_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="comm_fut_qty" value="1" min="0">
+                                <label>SELL</label>
+                                <input type="number" id="comm_fut_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="comm_fut_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="comm_fut_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-field">
+                                <label id="comm_fut_qty_label">QUANTITY</label>
+                                <input type="number" id="comm_fut_qty" step="1" placeholder="0">
+                            </div>
+                            <div class="input-field" id="comm_fut_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="comm_fut_amount" step="0.01" placeholder="0">
+                            </div>
+                        </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="comm_fut_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="comm_fut_brokerage">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="comm_fut_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="comm_fut_gst">₹0</span></div>
-                            <div class="result-row"><span>CTT</span><span id="comm_fut_ctt">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="comm_fut_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="comm_fut_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="comm_fut_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="comm_fut_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="comm_fut_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="comm_fut_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="comm_fut_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="comm_fut_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="comm_fut_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="comm_fut_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>CTT</span>
+                                <span id="comm_fut_ctt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="comm_fut_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="comm_fut_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="comm_fut_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="comm_fut_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Commodity Options Sub-tab -->
-                <div class="sub-tab-content" id="comm-options">
+                <!-- Commodity Options -->
+                <div id="comm_options" class="sub-tab-content">
                     <div class="calc-card">
                         <h3>Commodity Options</h3>
                         <div class="input-group">
@@ -333,52 +669,99 @@
                                 <label>COMMODITY</label>
                                 <select id="comm_opt_select">
                                     <option value="GOLD" data-multiplier="100">GOLD</option>
-                                    <option value="SILVER" data-multiplier="30">SILVER</option>
-                                    <option value="COPPER" data-multiplier="2500">COPPER</option>
-                                    <option value="CRUDEOIL" data-multiplier="100">CRUDE OIL</option>
+                                    <option value="SILVER" data-multiplier="30000">SILVER</option>
+                                    <option value="COPPER" data-multiplier="1000">COPPER</option>
+                                    <option value="CRUDE OIL" data-multiplier="100">CRUDE OIL</option>
                                 </select>
                             </div>
                             <div class="input-field">
                                 <label>STRIKE</label>
-                                <input type="number" id="comm_opt_strike" value="60000" min="0">
+                                <input type="number" id="comm_opt_strike" step="0.01" placeholder="0">
                             </div>
                         </div>
                         <div class="input-group">
                             <div class="input-field">
                                 <label>BUY</label>
-                                <input type="number" id="comm_opt_bp" value="150" min="0">
+                                <input type="number" id="comm_opt_bp" step="0.01" placeholder="0">
                             </div>
                             <div class="input-field">
                                 <label>SELL</label>
-                                <input type="number" id="comm_opt_sp" value="160" min="0">
+                                <input type="number" id="comm_opt_sp" step="0.01" placeholder="0">
                             </div>
                         </div>
+
+                        <div class="input-mode-toggle">
+                            <label>
+                                <input type="radio" name="comm_opt_input_mode" value="quantity" checked> Quantity
+                            </label>
+                            <label>
+                                <input type="radio" name="comm_opt_input_mode" value="amount"> Amount
+                            </label>
+                        </div>
+
                         <div class="input-group">
                             <div class="input-field">
-                                <label>QUANTITY</label>
-                                <input type="number" id="comm_opt_qty" value="1" min="0">
+                                <label id="comm_opt_qty_label">QUANTITY</label>
+                                <input type="number" id="comm_opt_qty" step="1" placeholder="0">
                             </div>
-                            <div class="input-field">
-                                <!-- Empty space for alignment -->
+                            <div class="input-field" id="comm_opt_amount_field" style="display:none;">
+                                <label>AMOUNT</label>
+                                <input type="number" id="comm_opt_amount" step="0.01" placeholder="0">
                             </div>
                         </div>
+
                         <div class="results">
-                            <div class="result-row"><span>Turnover</span><span id="comm_opt_turnover">₹0</span></div>
-                            <div class="result-row"><span>Brokerage</span><span id="comm_opt_brokerage">₹0</span></div>
-                            <div class="result-row"><span>Exchange charge</span><span id="comm_opt_etc">₹0</span></div>
-                            <div class="result-row"><span>GST</span><span id="comm_opt_gst">₹0</span></div>
-                            <div class="result-row"><span>CTT</span><span id="comm_opt_ctt">₹0</span></div>
-                            <div class="result-row"><span>SEBI charges</span><span id="comm_opt_sebi">₹0</span></div>
-                            <div class="result-row"><span>Stamp duty</span><span id="comm_opt_stamp">₹0</span></div>
-                            <div class="result-row total"><span>Total charges</span><span id="comm_opt_total">₹0</span></div>
-                            <div class="result-row profit"><span>Net P&L</span><span id="comm_opt_pnl">₹0</span></div>
+                            <div class="result-row">
+                                <span>Buy Value</span>
+                                <span id="comm_opt_buy_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Sell Value</span>
+                                <span id="comm_opt_sell_value">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Turnover</span>
+                                <span id="comm_opt_turnover">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Brokerage</span>
+                                <span id="comm_opt_brokerage">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Exchange charge</span>
+                                <span id="comm_opt_etc">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>GST</span>
+                                <span id="comm_opt_gst">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>CTT</span>
+                                <span id="comm_opt_ctt">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>SEBI charges</span>
+                                <span id="comm_opt_sebi">₹0</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Stamp duty</span>
+                                <span id="comm_opt_stamp">₹0</span>
+                            </div>
+                            <div class="result-row total">
+                                <span>Total charges</span>
+                                <span id="comm_opt_total">₹0</span>
+                            </div>
+                            <div class="result-row profit">
+                                <span>Net P&L</span>
+                                <span id="comm_opt_pnl">₹0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="popup.js"></script>
 </body>
+
 </html>
